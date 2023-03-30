@@ -100,7 +100,7 @@ One could imagine instead generating samples from a target distribution $\pi_f$ 
 For example, $\pi_f(\xi)=\exp(-\norm{f(\xi)})$ is one such distribution.
 As @cannon2023voting show, however, a better approach yet might be to generate the Pareto frontier over a series of "short bursts."
 
-The original short bursts algorithm of @cannon2023voting is described in \ref{alg:sb}.
+The original short bursts algorithm of @cannon2023voting is described in Algorithm \ref{alg:sb}.
 Given an initial plan $\xi_0$, the short burst algorithm runs $b$ steps of some Markov chain $\M$ on districting plans, then picks the best plan from the set of $b+1$ plans (including the initializing plan) to initialize the next "burst." The chain $\M$ can be any Markov chain on districting plans, even one which does not satisfy detailed balance.
 @cannon2023voting use the Markov chain of @deford2019; here, we use a substantially similar algorithm that is also spanning-tree based and is implemented in the software of @redist.
 The short burst algorithm is terminated when $f(\xi_0)$ reaches a predefined threshold, or when the total number of bursts run hits a specified maximum.
