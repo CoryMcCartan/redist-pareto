@@ -5,7 +5,8 @@ criteria when drawing district boundaries.
 To aid in this process, researchers have developed many methods for optimizing
 districting plans according to one or more criteria.
 This research note extends a recently-proposed single-criterion optimization
-method, *short bursts* (Cannon et al. 2023), to handle the multi-criterion case, 
+method, *short bursts* ([Cannon et al. 2023](https://link.springer.com/article/10.1007/s11009-023-09994-1)), 
+to handle the multi-criterion case, 
 and in doing so approximate the Pareto frontier for any set of constraints.
 We study the empirical performance of the method in a realistic setting and 
 find it behaves as expected and is not very sensitive to algorithmic parameters.
