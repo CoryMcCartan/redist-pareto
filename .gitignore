@@ -1,0 +1,53 @@
+# to include specific .rds files, add a line like:
+# !path/to/file.rds
+
+# Raw data
+data-raw/*.*
+!data-raw/*.R
+!data-raw/*.md
+data-raw/*/
+data-out/*.*
+!data-out/*.md
+
+# Outputs of analyses, data
+*.rds
+*.rda
+*.rdata
+*.csv
+*.zip
+*.pdf
+*.html
+
+# paper files
+!paper/figures/*.pdf
+!paper/data/*.rds
+!paper/data/*.csv
+!paper/tables/*.csv
+
+# package files
+pkgdown
+docs
+
+# R/RStudio files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# General system files, latex files
+.DS_Store
+*.tmp
+*.swp
+*.bak
+*.gcx
+*.aux
+*.out
+*.axp
+*.bbl
+*.log
+*.o
+*.so
+*.dll
+
+# Additional rules (some may be added automatically)
+paper/pareto.tex

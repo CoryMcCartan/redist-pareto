@@ -1,0 +1,242 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode$for(hyperrefoptions)$,$hyperrefoptions$$endfor$}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+$doc-class.tex()$
+
+
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+$if(physics)$
+\usepackage[italicdiff]{physics}
+$endif$
+\mathtoolsset{showonlyrefs}
+
+% SPACING AND FONTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$if(linestretch)$
+\usepackage{setspace}
+$endif$
+\usepackage{iftex}
+% CAREFUL: the order of font includes here is very important!
+\ifPDFTeX
+  \usepackage[$if(fontenc)$$fontenc$$else$OT1,T1$endif$]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+  $if(font-serif-cochineal)$
+  \usepackage[p,osf,swashQ]{cochineal}
+  \usepackage[cochineal,vvarbb]{newtxmath}
+  $else$
+  \usepackage{newpxtext}
+  \usepackage{mathpazo}
+  $endif$
+  $if(font-sans-biolinium)$
+  \usepackage[scale=0.95]{biolinum}
+  $else$
+  \usepackage[scaled]{helvet}
+  $endif$
+  \usepackage[scale=0.95,varl]{inconsolata}
+\else % if luatex or xetex
+  \usepackage[scale=0.95,varl]{inconsolata}
+  \usepackage{newpxtext}
+  \usepackage{mathpazo}
+  $if(font-sans-biolinium)$
+  \usepackage[scale=0.95]{biolinum}
+  $else$
+  \usepackage[scaled]{helvet}
+  $endif$
+\fi
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+
+$if(indent)$
+$else$
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+$endif$
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\widowpenalty=10000
+\clubpenalty=10000
+\flushbottom
+\allowdisplaybreaks
+\sloppy
+
+
+% CORE PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$if(colorlinks)$
+\usepackage[dvipsnames,svgnames,x11names]{xcolor}
+$else$
+\usepackage{xcolor}
+$endif$
+$if(geometry)$
+\usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
+$endif$
+$if(svg)$
+\usepackage{svg}
+$endif$
+\usepackage[format=plain,
+  labelfont={bf,sf,small,singlespacing},
+  textfont={sf,small,singlespacing},
+  justification=justified,
+  margin=0.25in]{caption}
+
+% SECTIONS AND HEADINGS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setcounter{secnumdepth}{$if(secnumdepth)$$secnumdepth$$else$5$endif$}
+$if(serif-only)$$else$\usepackage{sectsty}$endif$
+\usepackage[compact]{titlesec}
+$if(block-headings)$
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+$endif$
+% short title
+\makeatletter
+\newcommand\@shorttitle{}
+\newcommand\shorttitle[1]{\renewcommand\@shorttitle{#1}}
+\usepackage{fancyhdr}
+\fancyhf{}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\fancyheadoffset{0pt}
+\lhead{\scshape \@shorttitle}
+\rhead{\scshape\today}
+\cfoot{\thepage}
+\makeatother
+% abstract styling
+\renewenvironment{abstract}{ 
+  \centerline
+  {\large\sffamily\bfseries Abstract}\vspace{-1em}
+  \begin{quote}\small
+}{
+  \end{quote}
+}
+$if(pagestyle)$
+\pagestyle{$pagestyle$}
+$endif$
+
+% PANDOC INCLUDES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+$tightlist.tex()$
+$tables.tex()$
+$graphics.tex()$
+% END PANDOC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% USER INCLUDES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$for(header-includes)$
+$header-includes$
+$endfor$
+% END USER INCLUDES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% BIBLIOGRAPHY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$if(biblio-config)$
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$apalike$endif$}
+$endif$
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$endif$
+
+% Give it this name so that it works with ::: #refs 
+\newenvironment{CSLReferences}[2]{ 
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(has-chapters)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+$endif$
+$endif$
+$if(biblatex)$
+\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
+$endif$
+\clearpage
+}{}
+
+% LINKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\usepackage{url}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(lang)$
+  pdflang={$lang$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor={$if(linkcolor)$$linkcolor$$else$Maroon$endif$},
+  filecolor={$if(filecolor)$$filecolor$$else$Maroon$endif$},
+  citecolor={$if(citecolor)$$citecolor$$else$Blue$endif$},
+  urlcolor={$if(urlcolor)$$urlcolor$$else$Blue$endif$},
+$else$
+$if(boxlinks)$
+$else$
+  hidelinks,
+$endif$
+$endif$
+  pdfcreator={LaTeX via pandoc}}
+
+% TITLE, AUTHOR, DATE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$title.tex()$
+
+
+
+\begin{document}
+$before-body.tex()$
+$for(include-before)$
+$include-before$
+$endfor$
+
+$toc.tex()$
+
+$if(linestretch)$
+\setstretch{$linestretch$}
+$endif$
+
+% USER BODY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$body$
+
+% END BODY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+$before-bib.tex()$
+$biblio.tex()$
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+$after-body.tex()$
+\end{document}

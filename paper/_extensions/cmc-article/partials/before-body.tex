@@ -1,0 +1,15 @@
+$if(font-serif-only)$$else$\allsectionsfont{\sffamily}$endif$
+
+$if(title)$
+\maketitle
+$endif$
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$if(keywords)$
+\textbf{\textit{Keywords}}\quad $for(keywords)$$keywords$$sep$~\textbullet~$endfor$
+$endif$
