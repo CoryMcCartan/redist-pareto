@@ -19,18 +19,20 @@ d_sb_pareto_2 <- map(plans_sb_2, function(pl) {
     unnest(df)
 
 ## plot ----
-ggplot(d_sb_pareto_2, aes(dev, comp, color=b, group=rep)) +
+# get color to match other figure
+pct_along <- (log10(200) - 1) / (4 - 1)
+col <- do.call(rgb, as.list(grDevices::colorRamp(wacolors$sea_star)(pct_along) / 255))
+
+ggplot(d_sb_pareto_2, aes(dev, comp, group=rep)) +
     facet_wrap(~ b, labeller = function(d) {
         list(b=str_glue("{d$b} samples per burst"))
     }) +
-    geom_line(linewidth=0.7) +
-    scale_color_wa_c("sea_star") +
+    geom_line(linewidth=0.6, color=col) +
+    # scale_color_wa_c("sea_star", guide="none") +
     scale_x_continuous("Maximum population deviation", labels=percent) +
     labs(y="Polsby-Popper compactness (higher is more compact)",
          color="Burst size") +
     theme_paper() +
-    theme(legend.position=c(0.92, 0.4),
-          panel.spacing.x=unit(0.5, "cm"),
-          legend.background=element_blank())
+    theme(panel.spacing.x=unit(0.5, "cm"))
 
 ggsave(here("paper/figures/pareto_burst_size.pdf"), width=7, height=3.5)

@@ -21,3 +21,7 @@ theme_paper = function() {
 }
 
 # Helper functions ------
+# Generate n random draws from spherical Gaussian in k dimensions
+rmvnorm <- function(n, k=1) {
+    matrix(rnorm(n*k), nrow=k, ncol=n)
+}

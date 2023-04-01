@@ -6,6 +6,7 @@ areas <- as.numeric(sf::st_area(map))
 
 score_dev <- scorer_pop_dev(map)
 score_comp <- scorer_polsby_popper(map, perim_df, areas)
+scorer <- combine_scorers(score_dev, score_comp)
 
 # Run MCMC ---------
 set.seed(02138)
@@ -22,7 +23,6 @@ plans_mcmc <- plans_mcmc |>
 set.seed(02138)
 
 N_sb = c(10, 100, 1000, 10000)
-scorer <- combine_scorers(score_dev, score_comp)
 plans_sb <-  map(N_sb, function(N) {
     cat(N, "\n")
     redist_shortburst(map, scorer, burst_size=10, max_bursts=N,

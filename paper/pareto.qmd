@@ -52,9 +52,9 @@ Sampling algorithms aim to generate a random sample of districting plans which m
 These algorithms include ad-hoc methods [@cirincione2000; @chen2013; @magleby2018] as well as algorithms that are designed to sample from a specific probability distribution [@mattingly2014; @wu2015; @deford2019; @carter2019; @fifield2020automated; @mccartan2020; @cannon2022spanning]; most of which are based on Markov chain Monte Carlo techniques.
 
 In contrast, optimization algorithms are designed to produce a districting plan or plans which score well on predefined numerical criteria.
-Informally, while sampling algorithms can give an idea of a "typical" districting plan, optimization algorithms can find more extreme or even close to optimal districting plans along certain dimensions.
+Informally, while sampling algorithms can give an idea of a "typical" districting plan, optimization algorithms can find more extreme or even close-to-optimal districting plans along certain dimensions.
 Many different optimization schemes have been proposed in the literature [@mehrotra1998; @macmillan2001; @bozkaya2003; @altman2011bard; @liu2016pear; @rincon2013multiobjective; @gurnee2021fairmandering; @swamy2022multiobjective].
-One recent development by @cannon2023voting has been optimization by *short bursts*, which has showed particular promise in maximizing minority vote share across many districts.
+One recent development by @cannon2023voting has been optimization by *short bursts*, which has shown particular promise in maximizing minority vote share across many districts.
 The short burst algorithm operates by running a Markov chain on the space of districting plans for a small number of steps, then restarting it from the step which scored highest according to a prespecified criterion.
 
 One limitation of many of these optimization algorithms is that users must specify a univariate scoring function.
@@ -66,7 +66,7 @@ While some optimization algorithms [@rincon2013multiobjective; @swamy2022multiob
 This research note provides a natural extension of the short burst algorithm to optimize the entire Pareto frontier at once.
 
 @sec-method describes the problem formally and develops the algorithmic extension, which is also implemented in open-source software [@redist].
-We examine the efficacy of the proposed algorithm in studying congressional redistricting in Iowa in @sec-method.
+We examine the efficacy of the proposed algorithm in studying congressional redistricting in Iowa in @sec-demo.
 We find that the proposed algorithm identifies an expanding Pareto frontier as the number of bursts increases, that the algorithm's performance is not sensitive to the burst size, and that multiple independent runs of the algorithm for fixed parameters produce similar results.
 @sec-conclude concludes and discusses directions for future work.
 
@@ -90,7 +90,7 @@ It is not possible to improve a plan on the Pareto frontier (in the sense of inc
 
 ## Pareto optimization by short bursts
 
-The Pareto frontier $P(f)$ for a scoring function $f:\Xi\to\R^J$ is easily calculated from an enumeration of all possible districting plans $\Xi$: simply discard plans in $\Xi$ which are Pareto dominated by any other plan.
+The Pareto frontier $P(f)$ for a scoring function $f:\Xi\to\R^J$ is easily calculated from an enumeration of all possible districting plans: simply discard plans in $\Xi$ which are Pareto dominated by any other plan.
 Unfortunately, in most realistic districting problems, $\Xi$ is too large to enumerate, and so analysts must resort to approximations.
 
 Some researchers have generated an approximate Pareto frontier by generating a large number of samples from $\Xi$ using a redistricting sampling algorithm targeting a "neutral" distribution $\pi$ which contains no information about $f$, and then discarding samples which are Pareto dominated by any other sampled plan [@schutzman2020trade].
@@ -122,13 +122,13 @@ Markov chain $\M$, and burst size parameter $b$.
 ```
 For a scoring function $f:\Xi\to\R^J$, the Pareto frontier $P(f)$ can be approximated with Algorithm \ref{alg:sb} by running the algorithm to completion on many different scoring functions $f_{\vec w}$, where $$
 f_{\vec w}(\xi) = \sum_{j=1}^J w_j f_j(\xi),
-$$ for many different combinations of weights $\vec w$.
+$$ for many different combinations of weights $\vec w$ lying in a $J$-simplex.
 However, this is computationally expensive, especially as $J$ grows.
 
 Instead, we propose a simple modification to Algorithm \ref{alg:sb}.
-Rather than selecting the best plan from the previous burst to initialize the next burst, we could imagine keeping track of the set of plans yet observed which are not Pareto-dominated by any other observed plan, and initializing each burst with a plan sampled from this Pareto efficient set.
+Rather than selecting the best plan from the previous burst to initialize the next burst, we will keep track of the set of sampled plans which are not Pareto-dominated by any other observed plan, and initializing each burst with a plan sampled from this Pareto efficient set.
 This yields a generalized short burst algorithm for Pareto optimization which is detailed in Algorithm \ref{alg:sbp}.
-The univariate is Algorithm \ref{alg:sb} is a special case of Algorithm \ref{alg:sbp} with $J=1$.
+The univariate Algorithm \ref{alg:sb} is a special case of Algorithm \ref{alg:sbp} with $J=1$.
 
 ```{=tex}
 \begin{algorithm}[ht]
@@ -147,19 +147,22 @@ $X\leftarrow \{\xi\in X: \not\exists\ \xi'\in X \text{ with } \xi\prec\xi'\}$.
 \end{enumerate}
 \end{algorithm}
 ```
-By initializing each burst with a sample from the thus-observed Pareto frontier, Algorithm \ref{alg:sbp} is able to explore and improve the entire Pareto frontier at any point.
-One could imagine generalizations of the algorithm which place more weight on plans on the Pareto frontier which the algorithm estimates are easier to further optimize.
+By initializing each burst with a sample from the yet-observed Pareto frontier, Algorithm \ref{alg:sbp} is able to explore and improve the entire Pareto frontier at any point.
+One could imagine generalizations of the algorithm which place more weight on plans on the Pareto frontier which the algorithm heuristically believes are easier to further optimize.
 We leave such improvements to future work.
+
+## Algorithm properties
 
 Letting $X_n$ denote the (random) output of Algorithm \ref{alg:sbp} after $n$ bursts, we can record several easily-verified properties of the proposed algorithm.
 Proofs are deferred to the appendix.
 
 ```{=tex}
 \begin{restatable}{prop}{propconv}
-If the Markov chain $\M$ has a strictly positive transition probability between any pair of plans, then $X_n\cvas P(f)$ as $n\to\infty$.
+Let $\M^b$ be the Markov chain obtained by taking $b$ steps from $\M$ at a time.
+If the Markov chain $\M^b$ has a strictly positive transition probability between any pair of plans, then $X_n\cvas P(f)$ as $n\to\infty$.
 \end{restatable}
 ```
-Unfortunately, all Markov chains developed to date to sample districting plans do not have strictly positive transition probability between all pair of plans.
+Unfortunately, all Markov chains developed to date to sample districting plans do not have strictly positive transition probability between all pairs of plans.
 Weaker conditions such as the irreducibility of $\M$ are not enough for convergence, either, as the following proposition records.
 
 ```{=tex}
@@ -168,9 +171,17 @@ Weaker conditions such as the irreducibility of $\M$ are not enough for converge
 For any $\Xi$, burst size $b\le |\Xi|-2$, and scoring function $f:\Xi\to\R$ which takes at least $b+2$ distinct values on  $\Xi$, there exists an irreducible Markov chain $\M$ on $\Xi$ such that $X_n\not\cvas P(f)$ as $n\to\infty$ for some initializing set $A$.
 \end{restatable}
 ```
-While Algorithm \ref{alg:sbp} is therefore not guaranteed to produce the Pareto frontier, even with infinite computing time, given the promising results in @cannon2023voting, we expect it to perform well in approximating the Pareto frontier in real-world redistricting problems.
+While Algorithm \ref{alg:sbp} is therefore not guaranteed to produce the Pareto frontier in all settings, even with infinite computing time, given the promising results in @cannon2023voting, we expect it to perform well in approximating the Pareto frontier in real-world redistricting problems.
 
-```{r fig-demo, out.width="80%"}
+One qualitative difference in algorithm performance between the $J=1$ and $J>1$ settings involves local minima.
+When $J=1$ and the algorithm finds itself in a local minimum, it is often unable to further improve the scoring function.
+Multiple runs of the algorithm are therefore often required to have confidence that any particular run has avoided such a local minimum.
+While there is no guarantee of avoiding local minima when $J>1$, in practice such issues may be mitigated by the fact that the algorithm randomly selects starting points along the currently-estimated Pareto frontier for each burst.
+If one point along the frontier lies in a local minimum, the algorithm can still improve the overall frontier by starting bursts from other points.
+Of course, the overall size of the Pareto frontier grows rapidly as $J$ increases (see appendix).
+As a result, each portion of the frontier may get less overall "attention" per burst, leading to overall slower improvements in any one region of the frontier.
+
+```{r fig-demo, out.width="75%"}
 #| fig.cap: |
 #|    Pareto frontier estimated by the proposed method across a range of total
 #|    bursts (colored lines), plotted against 1,000 samples from an MCMC sampling
@@ -184,14 +195,19 @@ Here we apply the proposed Algorithm \ref{alg:sbp} to the problem of congression
 Since 2010, Iowa has been apportioned four congressional districts, and by law, these districts must be comprised of whole counties, of which there are 99.
 Traditionally, maximizing district compactness and minimizing the deviation in populations across districts are far and away the two most important criteria for districting plans in Iowa.
 
+
 We measure district compactness with the *Polsby--Popper* score [@polsby1991third], which is proportional to the ratio of a district's area to its perimeter.
-To score an entire plan, we record the minimum *Polsby--Popper* score (least compact) of all the districts.
+To score an entire plan, we record the minimum Polsby--Popper score (least compact) of all the districts: $$
+\text{comp}(\xi) \coloneqq \min_{1\le i\le m} 
+4\pi \frac{\text{area}_i(\xi)}{\text{perim}_i(\xi)},
+$$ where $\text{area}_i(\xi)$ and $\text{perim}_i(\xi)$ denote the area and perimeter of district $i$ in a plan $\xi$.
 We measure population equality with the *maximum population deviation* score.
 For districts in a plan $\xi$ with populations $N_1,\dots,N_m$ in a state with total population $N$, the population deviation score is defined as $$
     \text{dev}(\xi) \coloneqq \max_{1\le i\le m} \abs{\frac{N_i - N/m}{N/m}},
 $$ that is, the maximum percentage deviation in any district from full population equality.
+We can therefore write the overall scoring function as $f(\xi) = (\text{dev}(\xi), -\text{comp}(\xi))$. 
 
-```{r fig-maps, fig.pos="t"}
+```{r fig-maps, fig.pos="htb"}
 #| fig.cap: |
 #|    Plans along the Pareto frontier estimated with 10,000 bursts.
 knitr::include_graphics("figures/pareto_maps.pdf")
@@ -202,12 +218,12 @@ The estimated Pareto frontiers from each of these runs of the algorithm is plott
 For comparison, we also run the underlying Markov chain for 1,000 steps, and plot the sampled plans' compactness and deviation scores on the same figure.
 Unsurprisingly, the estimated Pareto frontier lie outside of (or close to) the convex hull of the sampled plans' scores, even for small numbers of total bursts,
 
-@fig-burst-size plots the 11 plans that define the Pareto frontier estimated with 10,000 bursts.
+@fig-maps plots the 11 plans that define the Pareto frontier estimated with 10,000 bursts.
 The minimum-deviation plan is relatively noncompact compared to the rest of the frontier, though is typical compared to the set of plans sampled directly from the Markov chain.
 As we travel along the frontier, compactness increases substantially, before reaching a relative plateau.
 In fact, there appears to be little overall tradeoff between the two criteria, as indicated by the sharp angle in the Pareto frontier.
 Across most of their range, each criterion can be optimized with minimal effect on the other criterion; only at extreme values must compactness and population equality be weighed against each other.
-Compared to univariate optimizers or existing sampling methods, the proposed algorithm enables qualitative findings like this which may be useful to redistricting practitioners looking to improve a districting plan along multiple dimensions.
+Compared to single-criterion optimizers or existing sampling methods, the proposed algorithm enables qualitative findings like this which may be useful to redistricting practitioners looking to improve a districting plan along multiple dimensions.
 
 ```{r fig-burst-size}
 #| fig.cap: |
@@ -239,10 +255,10 @@ Additional simulation studies examining the scaling behavior of all of these alg
 \propconv*
 \begin{proof}
 Let $\xi \in P(f)$.
-Since every pair of plans has strictly positive transition probability, with probability 1 the chain $\M$ started at any $\xi_0$ will transition to $\xi$ within a burst of length $b$ (i.e., $\exists n : \xi \in X_n$).
+Since every pair of plans has strictly positive transition probability under $\M^b$, with probability 1 the algorithm started at any $A$ will eventually transition to $\xi$ within a burst of length $b$ (i.e., $\exists n : \xi \in X_n$).
 Since $\xi\in P(f)$, at the end of the burst, $\xi$ will be added to the approximate Pareto frontier $X$.
 Additionally, $\xi$ will never be removed from $X$, since no plan in $\Xi$ Pareto dominates it.
-Since this holds for all $\xi\in P(f)$, with probability one all plans in $P(f)$ will eventually belong to $X$.
+Since this holds for all $\xi\in P(f)$ (a finite set), with probability one all plans in $P(f)$ will eventually belong to $X$.
 Then no other plan can belong to $X$, or else such a plan would not be Pareto dominated by any plan in $\Xi$, and thus would belong to $P(f)$ itself.
 So $X_n\cvas P(f)$.
 \end{proof}
@@ -258,3 +274,22 @@ Since there are at least $b$ plans separating any of  $\{\xi_1, ... \xi_{i+1}\}$
 \end{proof}
 ```
 We expect Proposition \ref{prop:irred} to hold for $J>1$ as well.
+
+\newpage
+
+# Scaling of the Pareto frontier size {.appendix}
+
+@fig-frontier-size shows the scaling behavior of the size of the Pareto frontier.
+We generate $n$ samples from a $\mathcal{N}(0, I_{J\times J})$ distribution, 
+for a range of $n$ and $J$.
+
+As both parameters increase, the size of the Pareto frontier grows rapidly;
+as $n\to\infty$ the growth is exponential in $J$.
+
+```{r fig-frontier-size}
+#| fig.cap: |
+#|    Pareto frontier size for samples from a multivariate Normal distribution,
+#|    by dimension and sample size.
+#|    Twenty samples were generated for each combination of parameters.
+knitr::include_graphics("figures/mvn_frontier_size.pdf")
+```
