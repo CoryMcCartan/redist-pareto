@@ -205,7 +205,7 @@ We measure population equality with the *maximum population deviation* score.
 For districts in a plan $\xi$ with populations $N_1,\dots,N_m$ in a state with total population $N$, the population deviation score is defined as $$
     \text{dev}(\xi) \coloneqq \max_{1\le i\le m} \abs{\frac{N_i - N/m}{N/m}},
 $$ that is, the maximum percentage deviation in any district from full population equality.
-We can therefore write the overall scoring function as $f(\xi) = (\text{dev}(\xi), -\text{comp}(\xi))$. 
+We can therefore write the overall scoring function as $f(\xi) = (-\text{dev}(\xi), \text{comp}(\xi))$. 
 
 ```{r fig-maps, fig.pos="htb"}
 #| fig.cap: |
