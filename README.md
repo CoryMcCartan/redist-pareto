@@ -24,3 +24,8 @@ lapply(sort(Sys.glob("replication/*.R")), source)
 
 Then run `quarto::quarto_render("paper/pareto.qmd")` to generate the paper.
 
+## Software
+
+The methods described in the paper are implemented in the [**redist**](https://alarm-redist.org/redist/) software.
+As of the time of writing (i.e., before version 4.2 is released), you will need the development version installed.
+
