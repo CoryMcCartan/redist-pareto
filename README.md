@@ -1,5 +1,7 @@
 # Finding Pareto Efficient Redistricting Plans with Short Bursts
 
+[![](https://img.shields.io/badge/arXiv-2304.00427-b31b1b)](https://arxiv.org/abs/2304.00427)
+
 Redistricting practitioners must balance many competing constraints and 
 criteria when drawing district boundaries.
 To aid in this process, researchers have developed many methods for optimizing
