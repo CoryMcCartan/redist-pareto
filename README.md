@@ -1,5 +1,7 @@
 # Finding Pareto Efficient Redistricting Plans with Short Bursts
 
+[![](https://img.shields.io/badge/arXiv-2304.00427-b31b1b)](https://arxiv.org/abs/2304.00427)
+
 Redistricting practitioners must balance many competing constraints and 
 criteria when drawing district boundaries.
 To aid in this process, researchers have developed many methods for optimizing
@@ -23,4 +25,9 @@ lapply(sort(Sys.glob("replication/*.R")), source)
 ```
 
 Then run `quarto::quarto_render("paper/pareto.qmd")` to generate the paper.
+
+## Software
+
+The methods described in the paper are implemented in the [**redist**](https://alarm-redist.org/redist/) software.
+As of the time of writing (i.e., before version 4.2 is released), you will need the development version installed.
 
