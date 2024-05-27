@@ -17,7 +17,7 @@ $if(journal.blinded)$
 $else$
 \author{$for(by-author)$
 \textbf{$it.name.literal$}$if(it.attributes.corresponding)$\footnote{
-%To whom correspondence should be addressed.
+To whom correspondence should be addressed.
 $if(it.email)$
 Email: \texttt{\href{mailto:$it.email$}{$it.email$}}.
 $endif$
@@ -32,12 +32,9 @@ $endif$
 $endfor$
 $if(thanks)$$thanks$$endif$}$endif$
 $for(it.affiliations)$
-$if(it.department)$
-\\$it.department$\\$it.name$
-$else$
-\\$it.name$
-$endif$
-\vspace{0.05in}
+$if(it.department)$\\$it.department$$endif$%
+$if(it.name)$\\$it.name$$endif$%
+\vspace{2pt}
 $endfor$ $sep$
 \and $endfor$}
 $endif$

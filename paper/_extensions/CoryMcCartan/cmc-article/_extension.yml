@@ -1,7 +1,7 @@
 title: cmc-article
 author: Cory McCartan
-version: 0.1.0
-quarto-required: ">=1.2.0"
+version: 1.0.0
+quarto-required: ">=1.3.0"
 contributes:
   formats:
     common:
@@ -15,10 +15,13 @@ contributes:
       fontsize: 11pt
       indent: false
       date-format: long
-      geometry:
-        - margin=1in
+      margin-top: 1in
+      margin-left: 1in
+      margin-right: 1in
+      margin-bottom: 1in
       filters:
         - refs.lua
+        - wordcount.lua
       execute:
         echo: false
         warning: false
@@ -38,6 +41,7 @@ contributes:
       urlcolor: DodgerBlue4
       number-sections: true
       number-depth: 4
+      block-headings: false
       fig-format: pdf
       fig-width: 7
       fig-height: 3.5

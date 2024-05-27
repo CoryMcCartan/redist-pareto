@@ -199,7 +199,7 @@ Traditionally, maximizing district compactness and minimizing the deviation in p
 We measure district compactness with the *Polsby--Popper* score [@polsby1991third], which is proportional to the ratio of a district's area to its perimeter.
 To score an entire plan, we record the minimum Polsby--Popper score (least compact) of all the districts: $$
 \text{comp}(\xi) \coloneqq \min_{1\le i\le m} 
-4\pi \frac{\text{area}_i(\xi)}{\text{perim}_i(\xi)},
+4\pi \frac{\text{area}_i(\xi)}{\text{perim}_i(\xi)^2},
 $$ where $\text{area}_i(\xi)$ and $\text{perim}_i(\xi)$ denote the area and perimeter of district $i$ in a plan $\xi$.
 We measure population equality with the *maximum population deviation* score.
 For districts in a plan $\xi$ with populations $N_1,\dots,N_m$ in a state with total population $N$, the population deviation score is defined as $$

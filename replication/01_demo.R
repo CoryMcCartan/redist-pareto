@@ -16,7 +16,7 @@ m <- as.matrix(plans_mcmc)
 plans_mcmc <- plans_mcmc |>
     as_tibble() |>
     filter(district == 1) |>
-    mutate(dev = score_pop(m),
+    mutate(dev = score_dev(m),
            comp = score_comp(m))
 
 # Run Pareto bursts ---------
@@ -55,7 +55,10 @@ ggsave(here("paper/figures/pareto_sb_demo.pdf"), width=6, height=4.5)
 # Pareto front plot ----------
 best <- tail(plans_sb, 1)[[1]]
 m_pareto <- attr(best, "pareto_front")
-sc_pareto <- attr(best, "pareto_score")
+sc_pareto <- attr(best, "pareto_scores")
+stopifnot(n_distinct(sc_pareto[, 1]) == nrow(sc_pareto))
+ord = match(sc_pareto[, 1], score_dev(m_pareto))
+m_pareto = m_pareto[, ord]
 
 pl <- lapply(seq_len(ncol(m_pareto)),  function(i) {
     suppressMessages({
@@ -69,6 +72,6 @@ pl <- lapply(seq_len(ncol(m_pareto)),  function(i) {
     })
 })
 
-wrap_plots(pl, nrow=2)
-ggsave(here("paper/figures/pareto_maps.pdf"), width=8.0, height=2.375)
+wrap_plots(pl, nrow=3)
+ggsave(here("paper/figures/pareto_maps.pdf"), width=8.0, height=3.75)
 
