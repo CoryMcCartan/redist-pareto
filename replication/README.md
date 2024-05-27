@@ -1,4 +1,4 @@
-# Replication Materials for "[TITLE HERE]"
+# Replication Materials for "Finding Pareto Efficient Redistricting Plans with Short Bursts"
 
 **Paper link:**
 
