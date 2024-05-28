@@ -56,6 +56,7 @@ ggsave(here("paper/figures/pareto_sb_demo.pdf"), width=6, height=4.5)
 best <- tail(plans_sb, 1)[[1]]
 m_pareto <- attr(best, "pareto_front")
 sc_pareto <- attr(best, "pareto_scores")
+stopifnot(score_dev(m_pareto) == sc_pareto[, 1]) # update redist version if fails
 
 pl <- lapply(seq_len(ncol(m_pareto)),  function(i) {
     suppressMessages({
