@@ -56,9 +56,6 @@ ggsave(here("paper/figures/pareto_sb_demo.pdf"), width=6, height=4.5)
 best <- tail(plans_sb, 1)[[1]]
 m_pareto <- attr(best, "pareto_front")
 sc_pareto <- attr(best, "pareto_scores")
-stopifnot(n_distinct(sc_pareto[, 1]) == nrow(sc_pareto))
-ord = match(sc_pareto[, 1], score_dev(m_pareto))
-m_pareto = m_pareto[, ord]
 
 pl <- lapply(seq_len(ncol(m_pareto)),  function(i) {
     suppressMessages({
